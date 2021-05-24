@@ -23,6 +23,25 @@ function cleanDist() {
     return del('dist');
 }
 
+function images() {
+    return src('app/images/**/*')
+        .pipe(imagemin(
+            [
+                imagemin.gifsicle({ interlaced: true }),
+                imagemin.mozjpeg({ quality: 75, progressive: true }),
+                imagemin.optipng({ optimizationLevel: 5 }),
+                imagemin.svgo({
+                    plugins: [
+                        { removeViewBox: true },
+                        { cleanupIDs: false }
+                    ]
+                })
+            ]
+        ))
+        .pipe(dest('dist/images'));
+}
+
+
 function pugCreate() {
     return src('app/**/*.pug')
         .pipe(pug({
@@ -51,23 +70,7 @@ function scripts() {
         .pipe(browserSync.stream());
 }
 
-function images() {
-    return src('app/images/**/*')
-        .pipe(imagemin(
-            [
-                imagemin.gifsicle({ interlaced: true }),
-                imagemin.mozjpeg({ quality: 75, progressive: true }),
-                imagemin.optipng({ optimizationLevel: 5 }),
-                imagemin.svgo({
-                    plugins: [
-                        { removeViewBox: true },
-                        { cleanupIDs: false }
-                    ]
-                })
-            ]
-        ))
-        .pipe(dest('dist/images'));
-}
+
 
 function styles() {
     return src('app/scss/style.scss')
@@ -97,6 +100,7 @@ function watching() {
     watch(['app/js/**/*.js'], mainJs);
     watch(['app/js/**/*.js'], scripts);
     watch(['app/**/*.pug'], pugCreate);
+    watch(['app/images/**/*'], images);
     watch(['dist/*.html']).on('change', browserSync.reload);
 }
 exports.mainJs = mainJs;
