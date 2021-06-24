@@ -20,4 +20,13 @@ $(function() {
         autoplay: 3
     });
 
+
+    // mixitup
+
+    var mixer = mixitup('.gallery__inner', {
+        load: {
+            filter: '.living'
+        }
+    });
+
 });
